@@ -1,0 +1,48 @@
+html
+  head
+    title= title
+  body
+    h1 Heimalið
+    ul
+    each val in hometeam.starting
+        li
+            span= val.TreyjuNumer
+            span -
+            span= val.LeikmadurNafn
+    div
+        a(href = '/file/homeTeam/starting/'+gameNumber) Sækja textaskrá
+    
+    ul
+    each val in hometeam.bench
+        li
+            if val.TreyjuNumer
+                span= val.TreyjuNumer
+                span -
+            span= val.LeikmadurNafn
+            if !val.TreyjuNumer
+                span= val.StadaNafn
+    div
+        a(href = '/file/homeTeam/bench/'+gameNumber) Sækja textaskrá
+
+    h1 Útilið
+    ul
+    each val in awayteam.starting
+        li
+            span= val.TreyjuNumer
+            span -
+            span= val.LeikmadurNafn
+    div
+        a(href = '/file/awayTeam/starting/'+gameNumber) Sækja textaskrá
+    
+    ul
+    each val in awayteam.bench
+        li
+            if val.TreyjuNumer
+                span= val.TreyjuNumer
+                span -
+            span= val.LeikmadurNafn
+            if !val.TreyjuNumer
+                span= val.StadaNafn
+    div
+        a(href = '/file/awayTeam/bench/'+gameNumber) Sækja textaskrá
+            
