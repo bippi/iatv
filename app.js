@@ -5,7 +5,6 @@ const soapRequest = require("easy-soap-request");
 const groupBy = require("lodash/groupBy");
 const app = express();
 app.set("view engine", "pug");
-const port = 3001;
 
 const generateTeamJson = team => {
   return team.reduce(
@@ -121,6 +120,8 @@ app.get("/file/:team/:group/:nr", (req, res) => {
     });
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}!`);
-});
+// app.listen(port, () => {
+//   console.log(`Example app listening on port ${port}!`);
+// });
+
+module.exports = app;
