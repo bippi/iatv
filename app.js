@@ -5,7 +5,7 @@ const soapRequest = require("easy-soap-request");
 const groupBy = require("lodash/groupBy");
 const app = express();
 app.set("view engine", "pug");
-const port = 3000;
+const port = 3001;
 
 const generateTeamJson = team => {
   return team.reduce(
@@ -74,10 +74,6 @@ app.get("/soaptojson/:nr", (req, res) => {
       headers: sampleHeaders
     }); // Optional timeout parameter(milliseconds)
     const { headers, body, statusCode } = response;
-    //console.log(headers);
-    //console.log(body);
-    //console.log(statusCode);
-    //res.set("Content-Type", "text/xml");
 
     parser.parseStringPromise(body).then(result => {
       const players =
@@ -123,9 +119,6 @@ app.get("/file/:team/:group/:nr", (req, res) => {
     .catch(err => {
       console.log(err);
     });
-  // var text = "hello world";
-
-  //res.send("<h1>foo</h1>");
 });
 
 app.listen(port, () => {
