@@ -87,11 +87,21 @@ app.get("/soaptojson/:nr", (req, res) => {
   //console.log(req);
 });
 
-const generateTeamString = team => {
+const generateHomeTeamString = team => {
   const teamArr = team.map(item => {
-    return `${item.TreyjuNumer !== "" ? item.TreyjuNumer : ""}${
-      item.LeikmadurNafn
-    } ${item.TreyjuNumer === "" ? item.StadaNafn : ""}`;
+    return `${item.TreyjuNumer !== "" ? item.TreyjuNumer+" " : ""}${item.TreyjuNumer === "" ? "("+item.StadaNafn.trim().substr(0,1)+")" : ""} ${
+      item.LeikmadurNafn.trim()
+    }`;
+  });
+
+  return teamArr.join("\n");
+};
+
+const generateAwayTeamString = team => {
+  const teamArr = team.map(item => {
+    return `${
+      item.LeikmadurNafn.trim()
+    } ${item.TreyjuNumer !== "" ? item.TreyjuNumer.trim() : ""}${item.TreyjuNumer === "" ? "("+item.StadaNafn.trim().substr(0,1)+")" : ""}`;
   });
 
   return teamArr.join("\n");
@@ -100,11 +110,20 @@ const generateTeamString = team => {
 app.get("/file/:team/:group/:nr", (req, res) => {
   const { params } = req;
   const { team, group, nr } = params;
+  let text = "";
   axios
     .get(`http://${req.headers.host}/soaptojson/${nr}`)
     .then(resp => {
       //console.log(resp.data[team][group]);
-      const text = generateTeamString(resp.data[team][group]);
+
+      if (team === "homeTeam"){
+        text = generateHomeTeamString(resp.data[team][group]);
+      }
+
+      else {
+        text = generateAwayTeamString(resp.data[team][group]);
+      }
+      
 
       res.setHeader("Content-type", "application/octet-stream");
 
