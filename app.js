@@ -89,7 +89,7 @@ app.get("/soaptojson/:nr", (req, res) => {
 
 const generateHomeTeamString = team => {
   const teamArr = team.map(item => {
-    return `${item.TreyjuNumer !== "" ? item.TreyjuNumer+" " : ""}${item.TreyjuNumer === "" ? "("+item.StadaNafn.trim().substr(0,1)+")" : ""} ${
+    return `${item.TreyjuNumer !== "" ? item.TreyjuNumer+"" : ""}${item.TreyjuNumer === "" ? "("+item.StadaNafn.trim().substr(0,1)+")" : ""} ${
       item.LeikmadurNafn.trim()
     }`;
   });
