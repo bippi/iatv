@@ -3,6 +3,7 @@ const xml2js = require("xml2js");
 const axios = require("axios");
 const soapRequest = require("easy-soap-request");
 const groupBy = require("lodash/groupBy");
+const cheerio = require("cheerio");
 const app = express();
 app.set("view engine", "pug");
 
@@ -29,22 +30,80 @@ const generateTeamJson = team => {
 
 app.get("/leikur/:nr", function(req, res) {
   const result = `Base url for appAdmin is ${req.headers.host}, original url is : ${req.originalUrl}`;
+  const homeTeamStartUp = [];
+  const homeTeamSubs = [];
+  const awayTeamStartUp = [];
+  const awayTeamSubs = [];
+  axios.get(`https://www.ksi.is/mot/leikskyrsla/?leikur=${req.params.nr}`).then((result)=>{
+    const $ = cheerio.load(result.data);
+    //console.log($.html());
+    const startUp = $('.panel-default').first();
+    const subs = $('.panel-default:eq(1)');
+    const startUprows = startUp.find('.report-table > table > tbody > tr');
+    const subsRows = subs.find('.report-table > table > tbody > tr');
 
-  console.log(result);
-  axios
-    .get(`http://${req.headers.host}/soaptojson/${req.params.nr}`)
-    .then(resp => {
-      res.render("index", {
-        title: "Lið",
-        gameNumber: req.params.nr,
-        message: "Listi yfir leikmenn",
-        hometeam: resp.data.homeTeam,
-        awayteam: resp.data.awayTeam
-      });
+    //console.log('------rows-----', rows.length)
+    //console.log(startUp);
+    startUprows.each((index, tr)=>{
+      //console.log(tr);
+      const homeRow = $(tr).find('td:first-child');
+      const awayRow = $(tr).find('td:last-child');
+      const homeName = homeRow.find('table>tbody>tr>td:nth-child(2)>a').text();
+      const homeNr = homeRow.find('table>tbody>tr>td:nth-child(1)').text()
+      const awayName = awayRow.find('table>tbody>tr>td:nth-child(2)>a').text();
+      const awayNr = awayRow.find('table>tbody>tr>td:nth-child(1)').text()
+      const homeObj = {
+        name: homeName,
+        number: homeNr
+      }
+      const awayObj = {
+        name: awayName,
+        number: awayNr
+      }
+      homeTeamStartUp.push(homeObj);
+      awayTeamStartUp.push(awayObj);
+      
     })
-    .catch(err => {
-      console.log(err);
-    });
+
+    subsRows.each((index, tr)=>{
+      //console.log(tr);
+      const homeRow = $(tr).find('td:first-child');
+      const awayRow = $(tr).find('td:last-child');
+      const homeName = homeRow.find('table>tbody>tr>td:nth-child(2)>a').text();
+      const homeNr = homeRow.find('table>tbody>tr>td:nth-child(1)').text()
+      const awayName = awayRow.find('table>tbody>tr>td:nth-child(2)>a').text();
+      const awayNr = awayRow.find('table>tbody>tr>td:nth-child(1)').text()
+      const homeObj = {
+        name: homeName,
+        number: homeNr
+      }
+      const awayObj = {
+        name: awayName,
+        number: awayNr
+      }
+      homeTeamSubs.push(homeObj);
+      awayTeamSubs.push(awayObj);
+      
+    })
+    //console.log(startUp);
+  res.send({homeTeamStartUp, homeTeamSubs, awayTeamStartUp, awayTeamSubs})
+  });
+
+  // console.log(result);
+  // axios
+  //   .get(`http://${req.headers.host}/soaptojson/${req.params.nr}`)
+  //   .then(resp => {
+  //     res.render("index", {
+  //       title: "Lið",
+  //       gameNumber: req.params.nr,
+  //       message: "Listi yfir leikmenn",
+  //       hometeam: resp.data.homeTeam,
+  //       awayteam: resp.data.awayTeam
+  //     });
+  //   })
+  //   .catch(err => {
+  //     console.log(err);
+  //   });
 });
 
 app.get("/soaptojson/:nr", (req, res) => {
@@ -73,6 +132,8 @@ app.get("/soaptojson/:nr", (req, res) => {
       headers: sampleHeaders
     }); // Optional timeout parameter(milliseconds)
     const { headers, body, statusCode } = response;
+
+    console.log(statusCode);
 
     parser.parseStringPromise(body).then(result => {
       const players =
