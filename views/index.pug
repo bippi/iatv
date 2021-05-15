@@ -4,16 +4,16 @@ html
   body
     h1 Heimalið
     ul
-    each val in hometeam.starting
+    each val in homeTeamStartUp
         li
             span= val.TreyjuNumer
             span -
             span= val.LeikmadurNafn
     div
-        a(href = '/file/homeTeam/starting/'+gameNumber) Sækja textaskrá
+        a(href = '/file/homeTeam/homeTeamStartUp/'+gameNumber) Sækja textaskrá
     
     ul
-    each val in hometeam.bench
+    each val in homeTeamSubs
         li
             if val.TreyjuNumer
                 span= val.TreyjuNumer
@@ -22,20 +22,20 @@ html
             if !val.TreyjuNumer
                 span= val.StadaNafn
     div
-        a(href = '/file/homeTeam/bench/'+gameNumber) Sækja textaskrá
+        a(href = '/file/homeTeam/homeTeamSubs/'+gameNumber) Sækja textaskrá
 
     h1 Útilið
     ul
-    each val in awayteam.starting
+    each val in awayTeamStartUp
         li
             span= val.TreyjuNumer
             span -
             span= val.LeikmadurNafn
     div
-        a(href = '/file/awayTeam/starting/'+gameNumber) Sækja textaskrá
+        a(href = '/file/awayTeam/awayTeamStartUp/'+gameNumber) Sækja textaskrá
     
     ul
-    each val in awayteam.bench
+    each val in awayTeamSubs
         li
             if val.TreyjuNumer
                 span= val.TreyjuNumer
@@ -44,5 +44,5 @@ html
             if !val.TreyjuNumer
                 span= val.StadaNafn
     div
-        a(href = '/file/awayTeam/bench/'+gameNumber) Sækja textaskrá
+        a(href = '/file/awayTeam/awayTeamSubs/'+gameNumber) Sækja textaskrá
             
